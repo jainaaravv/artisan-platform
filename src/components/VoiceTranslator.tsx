@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
-// --- Fix for SpeechRecognition typings ---
-// --- Fix for SpeechRecognition typings ---
+// Declare window SpeechRecognition typings for browser compatibility
 declare global {
   interface Window {
     SpeechRecognition?: SpeechRecognitionConstructor;
@@ -73,7 +72,6 @@ const VoiceTranslator: React.FC = () => {
     setRecognizedText("");
     setTranslatedText("");
 
-    // Ensure compatibility and type safety
     const SpeechRecognition =
       typeof window !== "undefined"
         ? window.SpeechRecognition || window.webkitSpeechRecognition
@@ -92,30 +90,30 @@ const VoiceTranslator: React.FC = () => {
     setListening(true);
 
     recognition.onresult = async (event: ISpeechRecognitionEvent) => {
-  const transcript = event.results[0][0].transcript;
-  setRecognizedText(transcript);
-  setListening(false);
-  setIsTranslating(true);
+      const transcript = (event.results[0][0] as SpeechRecognitionAlternative).transcript;
+      setRecognizedText(transcript);
+      setListening(false);
+      setIsTranslating(true);
 
-  try {
-    const response = await axios.post(TRANSLATE_API_URL, {
-      q: transcript,
-      source: selectedLanguage,
-      target: "en",
-      format: "text",
-    });
-    setTranslatedText(response.data.translatedText);
-  } catch {
-    setError("Translation failed. Please try again.");
-  } finally {
-    setIsTranslating(false);
-  }
-};
+      try {
+        const response = await axios.post(TRANSLATE_API_URL, {
+          q: transcript,
+          source: selectedLanguage,
+          target: "en",
+          format: "text",
+        });
+        setTranslatedText(response.data.translatedText);
+      } catch {
+        setError("Translation failed. Please try again.");
+      } finally {
+        setIsTranslating(false);
+      }
+    };
 
     recognition.onerror = (event: ISpeechRecognitionErrorEvent) => {
-  setListening(false);
-  setError(`Speech recognition error: ${event.error}`);
-};
+      setListening(false);
+      setError(`Speech recognition error: ${event.error}`);
+    };
 
     recognition.onend = () => setListening(false);
     recognition.start();
@@ -148,7 +146,7 @@ const VoiceTranslator: React.FC = () => {
     position: 'absolute' as const,
     inset: 0,
     opacity: 0.1,
-    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4b483' fill-opacity='0.15'%3E%3Cpath d='M30 30c0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12 12-5.373 12-12zm12 0c0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12 12-5.373 12-12z'/%3E%3C/g%3E%3C/svg%3E")`,
+    backgroundImage: `url("image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4b483' fill-opacity='0.15'%3E%3Cpath d='M30 30c0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12 12-5.373 12-12zm12 0c0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12 12-5.373 12-12z'/%3E%3C/g%3E%3C/svg%3E")`,
     backgroundSize: '120px 120px'
   };
 

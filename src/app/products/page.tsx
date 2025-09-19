@@ -1,17 +1,16 @@
-// src/app/products/page.tsx
 "use client";
-import { supabase } from "@/lib/supabaseClient";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
 interface Product {
   id: number;
   title: string;
   category: string;
-  price: number;
+  price: number | null;
   images: string | string[];
   transcript: string;
-  translations: any;
+  translations: Record<string, string> | null;
   artisan_name: string;
   artisan_language: string;
   blurb: string;
@@ -20,21 +19,21 @@ interface Product {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [user, setUser] = useState<object | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     async function fetchProducts() {
       const { data, error } = await supabase
-        .from("products")
+        .from<Product>("products")
         .select("*");
 
       if (error) {
         console.error("Error fetching products:", error.message);
       } else {
-        setProducts(data || []);
+        setProducts(data ?? []);
       }
       setLoading(false);
     }
@@ -44,7 +43,7 @@ export default function ProductsPage() {
       if (error) {
         console.error("Error getting session:", error.message);
       } else {
-        setUser(data?.session?.user || null);
+        setUser(data.session?.user ?? null);
       }
     }
 
@@ -52,11 +51,8 @@ export default function ProductsPage() {
     getSession();
   }, []);
 
-  // Get unique categories from products
   const allCategories = ["All", ...Array.from(new Set(products.map(p => p.category)))];
-  const filteredProducts = selectedCategory === "All" 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+  const filteredProducts = selectedCategory === "All" ? products : products.filter(p => p.category === selectedCategory);
 
   function goToProfile() {
     router.push("/profile");
@@ -72,63 +68,59 @@ export default function ProductsPage() {
   const headerStyle: React.CSSProperties = {
     background: "rgba(0, 0, 0, 0.3)",
     backdropFilter: "blur(20px)",
-    borderRadius: "1.5rem",
-    padding: "2rem",
+    borderRadius: 24,
+    padding: 24,
     border: "1px solid rgba(245, 158, 11, 0.2)",
     boxShadow: "0 25px 50px rgba(0, 0, 0, 0.5)",
-    marginBottom: "2rem",
+    marginBottom: 32,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     flexWrap: "wrap",
-    gap: "1rem",
+    gap: 16,
   };
 
-  const categoryButtonStyle = (isActive: boolean): React.CSSProperties => ({
+  const categoryButton = (active: boolean): React.CSSProperties => ({
     padding: "0.75rem 1.5rem",
-    background: isActive 
-      ? "linear-gradient(135deg, #f59e0b, #d97706)" 
-      : "rgba(0, 0, 0, 0.3)",
-    color: isActive ? "white" : "#fbbf24",
-    border: isActive ? "none" : "1px solid rgba(245, 158, 11, 0.3)",
-    borderRadius: "2rem",
+    background: active ? "linear-gradient(135deg, #f59e0b, #d97706)" : "rgba(0, 0, 0, 0.3)",
+    color: active ? "#fff" : "#fbbf24",
+    border: active ? "none" : "1px solid rgba(245, 158, 11, 0.3)",
+    borderRadius: 9999,
     cursor: "pointer",
-    fontSize: "0.9rem",
+    fontSize: 14,
     fontWeight: 500,
     transition: "all 0.3s ease",
     backdropFilter: "blur(10px)",
   });
 
-  const productCardStyle = (isHovered: boolean): React.CSSProperties => ({
-    background: "rgba(0, 0, 0, 0.4)",
+  const productCardStyle = (hover: boolean): React.CSSProperties => ({
+    background: "rgba(0,0,0,0.4)",
     backdropFilter: "blur(20px)",
-    borderRadius: "1.5rem",
+    borderRadius: 24,
     border: "1px solid rgba(245, 158, 11, 0.2)",
-    boxShadow: isHovered 
-      ? "0 30px 60px rgba(245, 158, 11, 0.2)" 
-      : "0 20px 40px rgba(0, 0, 0, 0.3)",
+    boxShadow: hover ? "0 30px 60px rgba(245,158,11,0.2)" : "0 20px 40px rgba(0,0,0,0.3)",
     transition: "all 0.3s ease",
-    transform: isHovered ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
+    transform: hover ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
     overflow: "hidden",
-    position: "relative" as const,
+    position: "relative",
   });
 
   const imageStyle: React.CSSProperties = {
     width: "100%",
-    height: "250px",
+    height: 250,
     objectFit: "cover",
     borderRadius: "1rem 1rem 0 0",
   };
 
   const priceTagStyle: React.CSSProperties = {
-    position: "absolute" as const,
-    top: "1rem",
-    right: "1rem",
+    position: "absolute",
+    top: 8,
+    right: 8,
     background: "linear-gradient(135deg, #f59e0b, #d97706)",
-    color: "white",
+    color: "#fff",
     padding: "0.5rem 1rem",
-    borderRadius: "1rem",
-    fontSize: "1.1rem",
+    borderRadius: 12,
+    fontSize: 17,
     fontWeight: 600,
     boxShadow: "0 4px 15px rgba(245, 158, 11, 0.3)",
   };
@@ -136,308 +128,169 @@ export default function ProductsPage() {
   const artisanInfoStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
-    gap: "0.5rem",
+    gap: 8,
     color: "#fbbf24",
-    fontSize: "0.9rem",
-    marginTop: "0.5rem",
+    fontSize: 14,
+    marginTop: 8,
   };
 
   const translationStyle: React.CSSProperties = {
     background: "rgba(245, 158, 11, 0.1)",
     border: "1px solid rgba(245, 158, 11, 0.2)",
-    borderRadius: "0.75rem",
-    padding: "0.75rem",
-    marginTop: "1rem",
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 16,
   };
 
   if (loading) {
     return (
       <div style={containerStyle}>
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "center", 
-          alignItems: "center", 
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           minHeight: "100vh",
-          color: "#fef3c7",
-          fontSize: "1.5rem",
+          color: "#fff",
+          fontSize: 18,
         }}>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ 
-              fontSize: "3rem", 
-              marginBottom: "1rem",
-              animation: "spin 2s linear infinite",
-            }}>🌀</div>
-            Loading beautiful crafts...
-          </div>
+          Loading products...
         </div>
-        <style jsx>{`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
       </div>
     );
   }
 
   return (
     <div style={containerStyle}>
-      <div style={{ padding: "2rem", maxWidth: "80rem", margin: "0 auto", position: "relative", zIndex: 10 }}>
-        {/* Header */}
+      <div style={{ padding: 32, maxWidth: 1280, margin: "0 auto", position: "relative", zIndex: 10 }}>
         <div style={headerStyle}>
           <div>
-            <h1 style={{ 
-              fontSize: "clamp(2rem, 4vw, 3rem)", 
-              fontWeight: "bold", 
-              color: "#fef3c7", 
-              fontFamily: "serif",
-              marginBottom: "0.5rem",
-              margin: 0,
-            }}>
-               Artisan Marketplace
-            </h1>
-            <p style={{ 
-              color: "#fbbf24", 
-              fontSize: "1.1rem", 
-              opacity: 0.9,
-              margin: "0.5rem 0 0 0",
-            }}>
-              Discover authentic handcrafted treasures from skilled artisans
-            </p>
+            <h1 style={{ fontSize: 32, fontWeight: "bold", color: "#fff", margin: 0 }}>Artisan Marketplace</h1>
+            <p style={{ color: "#fbbf24", fontSize: 16, marginTop: 4 }}>Discover authentic handcrafted treasures from skilled artisans</p>
           </div>
           {user && (
             <button
-              onClick={goToProfile}
+              onClick={() => router.push("/profile")}
               style={{
-                background: "rgba(0, 0, 0, 0.4)",
+                background: "rgba(0, 0, 0, 0.3)",
+                backdropFilter: "blur(10px)",
                 border: "1px solid rgba(245, 158, 11, 0.3)",
-                borderRadius: "1rem",
-                padding: "1rem",
+                borderRadius: 9999,
+                padding: 12,
                 color: "#fbbf24",
                 cursor: "pointer",
-                fontSize: "1.5rem",
+                fontSize: 24,
                 transition: "all 0.3s ease",
-                backdropFilter: "blur(10px)",
               }}
-              onMouseOver={e => {
-                e.currentTarget.style.background = "rgba(245, 158, 11, 0.2)";
-                e.currentTarget.style.transform = "scale(1.1)";
-              }}
-              onMouseOut={e => {
-                e.currentTarget.style.background = "rgba(0, 0, 0, 0.4)";
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-              title="My Profile"
             >
               👤
             </button>
           )}
         </div>
 
-        {/* Category Filter */}
-        <div style={{
-          background: "rgba(0, 0, 0, 0.3)",
-          backdropFilter: "blur(20px)",
-          borderRadius: "1.5rem",
-          padding: "1.5rem",
-          border: "1px solid rgba(245, 158, 11, 0.2)",
-          marginBottom: "2rem",
-        }}>
-          <h3 style={{ 
-            color: "#fef3c7", 
-            marginBottom: "1rem", 
-            fontSize: "1.2rem",
-            fontWeight: 600,
-            margin: "0 0 1rem 0",
-          }}>
-            🎨 Browse by Category
-          </h3>
-          <div style={{ 
-            display: "flex", 
-            flexWrap: "wrap", 
-            gap: "0.75rem" 
-          }}>
-            {allCategories.map(category => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                style={categoryButtonStyle(selectedCategory === category)}
-                onMouseOver={e => {
-                  if (selectedCategory !== category) {
-                    e.currentTarget.style.background = "rgba(245, 158, 11, 0.2)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }
-                }}
-                onMouseOut={e => {
-                  if (selectedCategory !== category) {
-                    e.currentTarget.style.background = "rgba(0, 0, 0, 0.3)";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+        {/* Category filters */}
+        <div style={{ margin: "16px 0", padding: "16px", backdropFilter: "blur(10px)", borderRadius: 24, background: "rgba(0, 0, 0, 0.3)", border: "1px solid rgba(245, 158, 11, 0.2)" }}>
+          {allCategories.map(category => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              style={categoryButton(category === selectedCategory)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
 
-        {/* Products Grid */}
-        <div style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", 
-          gap: "2rem" 
+        {/* Products grid */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: 24,
         }}>
           {filteredProducts.length === 0 && (
-            <div style={{
-              gridColumn: "1 / -1",
-              textAlign: "center",
-              color: "#fbbf24",
-              fontSize: "1.2rem",
-              padding: "3rem",
-            }}>
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔍</div>
-              No products found in this category
+            <div style={{ gridColumn: "1 / -1", textAlign: "center", color: "#fbbf24", fontSize: 20, padding: 32 }}>
+              No products found.
             </div>
           )}
-          
-          {filteredProducts.map((product) => (
+
+          {filteredProducts.map(product => (
             <div
               key={product.id}
               style={productCardStyle(hoveredCard === product.id)}
               onMouseEnter={() => setHoveredCard(product.id)}
               onMouseLeave={() => setHoveredCard(null)}
             >
-              {/* Product Image */}
               <div style={{ position: "relative" }}>
-                {Array.isArray(product.images)
-                  ? product.images.map((img: string, i: number) => (
-                      <img key={i} src={img} alt={product.title} style={imageStyle} />
-                    ))
-                  : (
-                    <img src={product.images} alt={product.title} style={imageStyle} />
-                  )}
-                <div style={priceTagStyle}>₹{product.price?.toLocaleString() || 'N/A'}</div>
-                
-                {/* Favorite Button */}
-                <button style={{
+                {Array.isArray(product.images) ? (
+                  product.images.map((img, idx) => (
+                    <img key={idx} src={img} alt={product.title} style={imageStyle} />
+                  ))
+                ) : (
+                  <img src={product.images} alt={product.title} style={imageStyle} />
+                )}
+                <div style={priceTagStyle}>
+                  ₹{product.price?.toLocaleString() ?? "N/A"}
+                </div>
+                <button title="Favorite" style={{
                   position: "absolute",
-                  top: "1rem",
-                  left: "1rem",
-                  background: "rgba(0, 0, 0, 0.5)",
+                  top: 8,
+                  left: 8,
+                  background: "rgba(0, 0, 0, 0.3)",
                   border: "none",
                   borderRadius: "50%",
-                  width: "2.5rem",
-                  height: "2.5rem",
+                  width: 40,
+                  height: 40,
                   cursor: "pointer",
                   color: "#fbbf24",
-                  transition: "all 0.3s ease",
                   backdropFilter: "blur(10px)",
-                  fontSize: "1.2rem",
+                  fontSize: 20,
+                  transition: "all 0.3s ease",
                 }}>
                   ♥
                 </button>
               </div>
-
-              {/* Product Info */}
-              <div style={{ padding: "1.5rem" }}>
-                <h3 style={{ 
-                  color: "#fef3c7", 
-                  fontSize: "1.4rem", 
+              <div style={{ padding: 20 }}>
+                <h3 style={{
+                  color: "#fff",
+                  fontSize: 20,
                   fontWeight: 600,
-                  marginBottom: "0.5rem",
-                  fontFamily: "serif",
-                  margin: "0 0 0.5rem 0",
+                  margin: 0,
+                  marginBottom: 8,
+                  fontFamily: "'Playfair Display', serif",
                 }}>
                   {product.title}
                 </h3>
-                
                 <div style={{
-                  background: "linear-gradient(90deg, #f59e0b, #d97706)",
+                  color: "#fbbf24",
+                  fontWeight: 500,
+                  marginBottom: 8,
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  fontSize: "0.9rem",
-                  fontWeight: 500,
-                  marginBottom: "1rem",
+                  background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                  fontSize: 14,
                 }}>
                   {product.category}
                 </div>
-
-                <p style={{ 
-                  color: "#fbbf24", 
-                  fontSize: "1rem",
-                  lineHeight: 1.6,
-                  marginBottom: "1rem",
+                <p style={{
+                  color: "#fbbf24",
+                  marginTop: 0,
+                  marginBottom: 8,
                   opacity: 0.9,
-                  margin: "0 0 1rem 0",
                 }}>
                   {product.blurb}
                 </p>
-
-                {/* Artisan Info */}
-                <div style={artisanInfoStyle}>
-                  <span style={{ fontSize: "1rem" }}>👤</span>
-                  <span>{product.artisan_name}</span>
-                  <span style={{ color: "#fbbf24", opacity: 0.7 }}>
-                    ({product.artisan_language})
-                  </span>
+                <div style={{ ...artisanInfoStyle }}>
+                  <span>👤 {product.artisan_name}</span> <span style={{opacity: 0.7}}>({product.artisan_language})</span>
                 </div>
-
-                {/* Star Rating */}
-                <div style={{ 
-                  display: "flex", 
-                  gap: "0.2rem", 
-                  marginTop: "0.5rem",
-                  marginBottom: "1rem",
-                  alignItems: "center",
-                }}>
-                  {[...Array(5)].map((_, i) => (
-                    <span 
-                      key={i} 
-                      style={{ 
-                        color: i < 4 ? "#f59e0b" : "#6b7280",
-                        fontSize: "1rem",
-                      }} 
-                    >
-                      ★
-                    </span>
-                  ))}
-                  <span style={{ 
-                    color: "#fbbf24", 
-                    fontSize: "0.8rem", 
-                    marginLeft: "0.5rem" 
-                  }}>
-                    4.8 (24 reviews)
-                  </span>
-                </div>
-
-                {/* Translation Preview */}
                 {product.translations && (
-                  <div style={translationStyle}>
-                    <div style={{ 
-                      color: "#fbbf24", 
-                      fontSize: "0.8rem", 
-                      fontWeight: 500,
-                      marginBottom: "0.5rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                    }}>
-                      <span style={{ fontSize: "1rem" }}>💬</span>
-                      Available in multiple languages
-                    </div>
-                    <div style={{ 
-                      display: "flex", 
-                      flexWrap: "wrap", 
-                      gap: "0.5rem" 
-                    }}>
+                  <div style={{...translationStyle, marginTop: 12}}>
+                    <div style={{display: "flex", gap: 8, flexWrap: "wrap"}}>
                       {Object.keys(product.translations).map(lang => (
                         <span key={lang} style={{
-                          background: "rgba(245, 158, 11, 0.2)",
+                          background: "rgba(245, 158, 11, 0.1)",
                           color: "#fbbf24",
-                          padding: "0.25rem 0.5rem",
-                          borderRadius: "0.5rem",
-                          fontSize: "0.7rem",
+                          padding: "2px 6px",
+                          borderRadius: 12,
+                          fontSize: 12,
                         }}>
                           {lang}
                         </span>
@@ -445,87 +298,55 @@ export default function ProductsPage() {
                     </div>
                   </div>
                 )}
-
-                {/* Transcript Preview */}
                 {product.transcript && (
                   <div style={{
                     background: "rgba(0, 0, 0, 0.2)",
                     border: "1px solid rgba(245, 158, 11, 0.1)",
-                    borderRadius: "0.75rem",
-                    padding: "0.75rem",
-                    marginTop: "1rem",
+                    borderRadius: 12,
+                    padding: 12,
+                    marginTop: 12,
                   }}>
-                    <div style={{ 
-                      color: "#fbbf24", 
-                      fontSize: "0.8rem", 
-                      fontWeight: 500,
-                      marginBottom: "0.5rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                    }}>
-                      <span style={{ fontSize: "1rem" }}>🎙️</span>
-                      Artisan's Story
-                    </div>
+                    <strong style={{color: "#fbbf24", fontSize: 13}}>
+                      🗣 Artisan's Story
+                    </strong>
                     <p style={{
-                      color: "#fbbf24",
-                      fontSize: "0.8rem",
-                      opacity: 0.8,
-                      lineHeight: 1.4,
                       margin: 0,
+                      marginTop: 4,
+                      color: "#fbbf24",
+                      opacity: 0.85,
+                      fontSize: 13,
+                      lineHeight: 1.5,
+                      maxHeight: 150,
+                      overflowY: "auto",
                     }}>
-                      {product.transcript.length > 100 
-                        ? `${product.transcript.substring(0, 100)}...`
-                        : product.transcript
-                      }
+                      {product.transcript.length > 100 ? product.transcript.substring(0, 100) + "..." : product.transcript}
                     </p>
                   </div>
                 )}
-
-                {/* Action Buttons */}
-                <div style={{ 
-                  display: "flex", 
-                  gap: "1rem", 
-                  marginTop: "1.5rem" 
-                }}>
+                <div style={{marginTop: 16, display: "flex", gap: 12}}>
                   <button style={{
                     flex: 1,
-                    padding: "0.75rem",
+                    padding: "12px",
                     background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "0.75rem",
-                    cursor: "pointer",
-                    fontSize: "1rem",
+                    borderRadius: 12,
                     fontWeight: 500,
+                    color: "#fff",
+                    fontSize: 16,
+                    border: "none",
+                    cursor: "pointer",
                     transition: "all 0.3s ease",
-                  }}
-                  onMouseOver={e => {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 10px 25px rgba(245, 158, 11, 0.3)";
-                  }}
-                  onMouseOut={e => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
                   }}>
                     View Details
                   </button>
-                  
                   <button style={{
-                    padding: "0.75rem",
+                    padding: "12px",
+                    borderRadius: 12,
                     background: "rgba(0, 0, 0, 0.3)",
-                    color: "#fbbf24",
                     border: "1px solid rgba(245, 158, 11, 0.3)",
-                    borderRadius: "0.75rem",
+                    fontSize: 24,
+                    color: "#fbbf24",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
-                    fontSize: "1.2rem",
-                  }}
-                  onMouseOver={e => {
-                    e.currentTarget.style.background = "rgba(245, 158, 11, 0.1)";
-                  }}
-                  onMouseOut={e => {
-                    e.currentTarget.style.background = "rgba(0, 0, 0, 0.3)";
                   }}>
                     🛒
                   </button>
@@ -534,27 +355,7 @@ export default function ProductsPage() {
             </div>
           ))}
         </div>
-
-        {/* Footer */}
-        <div style={{
-          textAlign: "center",
-          marginTop: "4rem",
-          padding: "2rem",
-          color: "#fbbf24",
-          opacity: 0.7,
-        }}>
-          <p style={{ fontSize: "1.1rem", margin: 0 }}>
-            ✨ Supporting artisans, preserving traditions ✨
-          </p>
-        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }
