@@ -1,12 +1,49 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-// Fix: Add type declarations for browser SpeechRecognition APIs
+// --- Fix for SpeechRecognition typings ---
+// --- Fix for SpeechRecognition typings ---
 declare global {
   interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
   }
+}
+
+interface SpeechRecognitionConstructor {
+  new (): ISpeechRecognition;
+}
+
+interface ISpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  maxAlternatives: number;
+  onaudioend: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onaudiostart: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onend: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onerror: ((this: ISpeechRecognition, ev: ISpeechRecognitionErrorEvent) => unknown) | null;
+  onnomatch: ((this: ISpeechRecognition, ev: ISpeechRecognitionEvent) => unknown) | null;
+  onresult: ((this: ISpeechRecognition, ev: ISpeechRecognitionEvent) => unknown) | null;
+  onsoundend: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onsoundstart: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onspeechend: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onspeechstart: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  onstart: ((this: ISpeechRecognition, ev: Event) => unknown) | null;
+  abort(): void;
+  start(): void;
+  stop(): void;
+}
+
+interface ISpeechRecognitionErrorEvent extends Event {
+  error: string;
+  message: string;
+}
+
+interface ISpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList;
 }
 
 const TRANSLATE_API_URL = "https://libretranslate.de/translate";
@@ -54,32 +91,31 @@ const VoiceTranslator: React.FC = () => {
    
     setListening(true);
 
-    recognition.onresult = async (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setRecognizedText(transcript);
-      setListening(false);
-      setIsTranslating(true);
+    recognition.onresult = async (event: ISpeechRecognitionEvent) => {
+  const transcript = event.results[0][0].transcript;
+  setRecognizedText(transcript);
+  setListening(false);
+  setIsTranslating(true);
 
-      try {
-        const response = await axios.post(TRANSLATE_API_URL, {
-          q: transcript,
-          source: selectedLanguage,
-          target: "en",
-          format: "text",
-        });
-        setTranslatedText(response.data.translatedText);
-      } catch (error) {
-        setError("Translation failed. Please try again.");
-        setTranslatedText("");
-      } finally {
-        setIsTranslating(false);
-      }
-    };
+  try {
+    const response = await axios.post(TRANSLATE_API_URL, {
+      q: transcript,
+      source: selectedLanguage,
+      target: "en",
+      format: "text",
+    });
+    setTranslatedText(response.data.translatedText);
+  } catch {
+    setError("Translation failed. Please try again.");
+  } finally {
+    setIsTranslating(false);
+  }
+};
 
-    recognition.onerror = (event: any) => {
-      setListening(false);
-      setError(`Speech recognition error: ${event.error}`);
-    };
+    recognition.onerror = (event: ISpeechRecognitionErrorEvent) => {
+  setListening(false);
+  setError(`Speech recognition error: ${event.error}`);
+};
 
     recognition.onend = () => setListening(false);
     recognition.start();

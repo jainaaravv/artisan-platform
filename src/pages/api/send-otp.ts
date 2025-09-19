@@ -68,10 +68,14 @@ console.log("Insert response:", data, error);
 
     return res.status(200).json({ message: 'OTP sent successfully' });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+  let errorMessage = 'Unknown error';
+  if (error instanceof Error) {
+    errorMessage = error.message;
     console.error('Unexpected server error:', error);
-    return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  } else {
+    console.error('Unexpected server error:', error);
   }
-  
-
+  return res.status(500).json({ message: 'Internal Server Error', error: errorMessage });
+}
 }
