@@ -27,7 +27,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     async function fetchProducts() {
-      let { data, error } = await supabase
+      const { data, error } = await supabase
         .from("products")
         .select("*");
 
@@ -40,7 +40,7 @@ export default function ProductsPage() {
     }
 
     async function getSession() {
-      let { data, error } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
       if (error) {
         console.error("Error getting session:", error.message);
       } else {
