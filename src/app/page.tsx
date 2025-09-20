@@ -57,13 +57,13 @@ const ArtisanAI = () => {
       {
         left: '5%',
         duration: '22s',
-        image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=120&h=120&fit=crop'
+        image: 'p1.jpeg'
       },
       {
         left: '25%',
         duration: '26s',
         delay: '3s',
-        image: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=120&h=120&fit=crop'
+        image: 'p2.jpeg'
       },
       {
         left: '45%',
@@ -102,65 +102,61 @@ const ArtisanAI = () => {
   // Artisan data
   const artisans = [
     {
-      name: "Ramesh - Pottery Master",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+      name: "Ramesh-Pottery and Ceramics",
+      image: "rameshpic.jpg",
       title: "Ramesh's Ceramic Art",
       works: [
-        "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1493106819501-66d381c466f1?w=60&h=60&fit=crop"
+        "p1.jpeg",
+        "p2.jpeg",
+        "p3.jpeg",
       ],
       description: "Traditional pottery with modern aesthetics, each piece tells a story of heritage and craftsmanship."
     },
     {
-      name: "Asha - Handloom Weaver",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
-      title: "Asha's Textile Art",
+      name: "Asha - Decorative Crafts",
+      image: "ashapic.png",
+      title: "Asha's Art",
       works: [
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1572635196243-4dd75fbdbd7f?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1574634257633-4d2a229e6e35?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=60&h=60&fit=crop"
+        "p4.jpeg",
+        "p5.jpeg",
+        "p6.jpeg",
       ],
-      description: "Intricate handloom textiles woven with generations of expertise and cultural significance."
+      description: "Traditional work crafted with care, blending heritage techniques and contemporary design to create timeless works of art"
     },
     {
-      name: "Suresh - Wood Artisan",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      title: "Suresh's Wood Crafts",
+      name: "Suresh - Handcrafted Decor",
+      image: "s5.jpg",
+      title: "Suresh's Crafts",
       works: [
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1544967882-4d5b82c82948?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=60&h=60&fit=crop"
+        "p8.jpeg",
+        "p9.jpeg",
+        "p10.jpeg",
       ],
-      description: "Masterful wood carving and furniture making, bringing natural beauty into functional art."
+      description: "These unique handcrafted pieces showcase traditional artistry blended with creative innovation, offering a glimpse into the rich heritage and skilled techniques passed down through generations"
     },
     {
-      name: "Leela - Metal Artist",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-      title: "Leela's Metal Works",
+      name: "Leela - Wood Artist",
+      image: "leela.jpg",
+      title: "Leela's Wood Works",
       works: [
-        "https://images.unsplash.com/photo-1526045431048-f857369baa09?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1512389055488-8d82cb26ba6c?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=60&h=60&fit=crop",
-        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=60&h=60&fit=crop"
+        "p11.jpeg",
+        "p12.jpeg",
+        "p13.jpeg",
       ],
-      description: "Exquisite metalwork combining traditional techniques with contemporary design sensibilities."
+      description: "Exquisite woodwork combining traditional techniques with contemporary design sensibilities."
     }
   ];
 
   // Stories data
   const stories = [
     {
-      image: "https://images.unsplash.com/photo-1594736797933-d0403ba1fe65?w=500&h=300&fit=crop",
+      image: "rameshpic.jpg",
       title: "Ramesh – The Potter's Legacy",
       text: "Ramesh comes from a family of traditional potters spanning five generations. His weathered hands mold clay into beautiful everyday art pieces, each one inspired by ancient village traditions passed down through generations. With ArtisanAI's intelligent marketplace platform, his handcrafted pottery now finds appreciative buyers across the globe, while still carrying the authentic essence and cultural stories of his hometown. Every piece tells a tale of heritage, patience, and the timeless art of transformation."
     },
     {
-      image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&h=300&fit=crop",
-      title: "Asha – Handloom Weaver",
+      image: "ashapic.png",
+      title: "Asha-Decorative Artisan",
       text: "Asha's wooden loom carries the rhythmic heartbeat of her ancestors, echoing through generations of skilled weavers. Each intricate pattern she weaves tells a story of resilience, patience, and deep-rooted cultural heritage. The vibrant threads dance under her expert guidance, creating textiles that are not just fabric, but living narratives of tradition. Through our AI-powered platform, she now shares not only her exquisite craft but also her cultural journey with an appreciative worldwide audience, bridging ancient techniques with modern connectivity."
     }
   ];
@@ -757,7 +753,7 @@ const ArtisanAI = () => {
 
       {/* Enhanced Floating Navbar */}
       <nav className="nav-floating">
-        <div className="logo">🌿 ArtisanAI</div>
+        <div className="logo"> ArteZaar</div>
         <div className="nav-links">
           <span className="nav-link" onClick={() => scrollToSection('home')}>Home</span>
           <span className="nav-link" onClick={() => scrollToSection('showcase')}>Artisans</span>
@@ -782,7 +778,7 @@ const ArtisanAI = () => {
       <section className="hero" id="home">
         <div className="hero-content">
           <h1>Connecting Local Artisans to the Digital World</h1>
-          <p className="hero-subtitle">Empowering traditional crafts through AI-driven marketplace technology</p>
+          <p className="hero-subtitle">Handcrafted treasures with a soul, story, and culture—take home a journey, not just a product.</p>
           <button
             className="hero-cta"
             onClick={() => scrollToSection('showcase')}
@@ -848,10 +844,10 @@ const ArtisanAI = () => {
 
       {/* Enhanced Footer */}
       <footer id="contact">
-        <p className="footer-title">🌿 ArtisanAI – Connecting Crafts to the World 🌿</p>
+        <p className="footer-title"> 🧵ArteZaar – Connecting Crafts to the World🧵</p>
         <p>Empowering local artisans through intelligent technology and global reach</p>
-        <p>Contact: artisanai@marketplace.com | +91 98765 43210</p>
-        <p>&copy; 2025 ArtisanAI Hackathon Project - Bridging Tradition with Innovation</p>
+        <p>Contact: helpartisans990@gmail.com | +91 98924 65686</p>
+        <p>&copy; 2025 ArteZaar- Bringing you handcrafted treasures that weave together each artisan’s story, culture, and passion—every piece is a journey, not just a product</p>
       </footer>
     </div>
   );
