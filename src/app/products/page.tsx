@@ -27,8 +27,9 @@ export default function ProductsPage() {
   useEffect(() => {
     async function fetchProducts() {
       const { data, error } = await supabase
-        .from<Product>("products")
-        .select("*");
+  .from("products")
+  .select("*")
+  .returns<Product[]>();  // ensures data has type Product[]
 
       if (error) {
         console.error("Error fetching products:", error.message);

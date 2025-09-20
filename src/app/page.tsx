@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const ArtisanAI = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [visibleStories, setVisibleStories] = useState(new Set());
-  const storyRefs = useRef([]);
+  const [visibleStories, setVisibleStories] = useState<Set<number>>(new Set());
+  const storyRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Handle scroll progress
   useEffect(() => {
@@ -22,16 +22,23 @@ const ArtisanAI = () => {
   // Intersection Observer for story animations
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = parseInt(entry.target.getAttribute('data-story-index'));
-            setVisibleStories(prev => new Set([...prev, index]));
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const indexStr = entry.target.getAttribute('data-story-index');
+        if (indexStr !== null) {
+          const index = parseInt(indexStr, 10);
+          setVisibleStories((prev) => {
+            const next = new Set(prev);
+            next.add(index);
+            return next;
+          });
+        }
+      }
+    });
+  },
+  { threshold: 0.3 }
+);
 
     storyRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref);
@@ -41,7 +48,7 @@ const ArtisanAI = () => {
   }, []);
 
   // Smooth scroll function
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({
@@ -827,7 +834,7 @@ const ArtisanAI = () => {
         {stories.map((story, index) => (
           <div
             key={index}
-            ref={el => storyRefs.current[index] = el}
+            ref={(el) => { storyRefs.current[index] = el; }}
             data-story-index={index}
             className={`story ${visibleStories.has(index) ? 'visible' : ''}`}
           >
