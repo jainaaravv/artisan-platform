@@ -3,23 +3,25 @@
 import React, { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 
-export default function YouTubeQRCode() {
+type QRCodeGeneratorProps = {
+  url: string;
+};
+
+export default function QRCodeGenerator({ url }: QRCodeGeneratorProps) {
   const [generating, setGenerating] = useState(false);
   const [qrValue, setQrValue] = useState('');
-
-  const youTubeUrl = 'https://www.youtube.com/watch?v=Aq5WXmQQooo';
 
   const generateQRCode = () => {
     setGenerating(true);
     setTimeout(() => {
-      setQrValue(youTubeUrl);
+      setQrValue(url);
       setGenerating(false);
     }, 500); // simulate loading delay
   };
 
   return (
     <div style={{ maxWidth: 400, margin: 'auto', padding: 24, fontFamily: 'sans-serif' }}>
-      <h2>YouTube Video QR Code Generator</h2>
+      <h2>QR Code Generator</h2>
       <button
         onClick={generateQRCode}
         style={{ padding: '12px 0', fontWeight: 'bold', width: '100%', marginBottom: 24 }}
