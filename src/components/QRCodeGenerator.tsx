@@ -14,7 +14,7 @@ export default function QRCodeGenerator({ url }: QRCodeGeneratorProps) {
   const generateQRCode = () => {
     setGenerating(true);
     setTimeout(() => {
-      setQrValue(url);
+      setQrValue('https://artisan-platform-9tb6.vercel.app/products');
       setGenerating(false);
     }, 500); // simulate loading delay
   };
