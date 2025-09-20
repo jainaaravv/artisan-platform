@@ -307,7 +307,7 @@ export default function ProductsPage() {
                     marginTop: 12,
                   }}>
                     <strong style={{color: "#fbbf24", fontSize: 13}}>
-                      🗣 Artisan's Story
+                      🗣 <p>{`Artisan's Story`}</p>
                     </strong>
                     <p style={{
                       margin: 0,

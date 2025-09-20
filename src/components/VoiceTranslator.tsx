@@ -534,7 +534,7 @@ const VoiceTranslator: React.FC = () => {
                   <strong>1.</strong> Select your preferred language
                 </p>
                 <p style={{ color: '#a7f3d0', fontSize: '1rem', margin: '0.5rem 0' }}>
-                  <strong>2.</strong> Click "Start Speaking" button
+                 <strong>2.</strong> {`Click "Start Speaking" button`}
                 </p>
               </div>
               <div>
